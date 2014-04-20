@@ -12,7 +12,6 @@ import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.UnexpectedRollbackException;
 
 /**
- *
  * @author khotyn 9/14/13 1:15 PM
  */
 @RunWith(JUnit4.class)
@@ -22,8 +21,9 @@ public class TestMain {
     @Before
     public void startUp() {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-            "applicationContext.xml");
+                "applicationContext.xml");
         springTxTest = applicationContext.getBean("springTxTest", SpringTxTest.class);
+        springTxTest.before();
     }
 
     @Test

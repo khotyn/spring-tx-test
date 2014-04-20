@@ -12,8 +12,7 @@ import javax.sql.DataSource;
  * @author khotyn 9/14/13 1:46 PM
  */
 public class SpringTxTestImpl implements SpringTxTest {
-    private JdbcTemplate        jdbcTemplate;
-    private DataSource          dataSource;
+    private JdbcTemplate jdbcTemplate;
     private TransactionTemplate transactionTemplate;
     private TransactionTemplate requiresNewTransactionTemplate;
     private TransactionTemplate nestedTransactionTemplate;
@@ -21,6 +20,11 @@ public class SpringTxTestImpl implements SpringTxTest {
     private TransactionTemplate neverTransactionTemplate;
     private TransactionTemplate notSupportedTransactionTemplate;
     private TransactionTemplate supportsTransactionTemplate;
+
+    @Override
+    public void before() {
+        jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Wu", "1111112");
+    }
 
     @Override
     public String helloWorld() {
@@ -49,7 +53,7 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 throw new RuntimeException("Rollback!");
             }
         });
@@ -61,12 +65,12 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 transactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         // 内部事务设置了 setRollbackOnly，
                         status.setRollbackOnly();
                     }
@@ -85,7 +89,7 @@ public class SpringTxTestImpl implements SpringTxTest {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                     }
                 });
 
@@ -101,13 +105,13 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 // Nested transaction committed.
                 requiresNewTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         // 内部事务发生回滚，但是外部事务不应该发生回滚
                         status.setRollbackOnly();
                     }
@@ -122,13 +126,13 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
 
                 requiresNewTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         // 内部事务抛出 RuntimeException，外部事务接收到异常，依旧会发生回滚
                         throw new RuntimeException();
                     }
@@ -143,13 +147,13 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
 
                 nestedTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         // 内部事务设置了 rollbackOnly，外部事务应该不受影响，可以继续提交
                         status.setRollbackOnly();
                     }
@@ -164,13 +168,13 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
 
                 nestedTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                     }
                 });
                 // 外部事务设置了 rollbackOnly，内部事务应该也被回滚掉
@@ -185,7 +189,7 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
             }
         });
     }
@@ -196,13 +200,13 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
 
                 mandatoryTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         // 内部事务回滚了，外部事务也跟着回滚
                         status.setRollbackOnly();
                     }
@@ -217,7 +221,7 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
             }
         });
     }
@@ -228,12 +232,12 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 neverTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                     }
                 });
             }
@@ -246,12 +250,12 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 neverTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                     }
                 });
             }
@@ -264,12 +268,12 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 notSupportedTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                     }
                 });
                 // 外部事务回滚，不会把内部的也连着回滚 
@@ -284,14 +288,14 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
 
                 try {
                     notSupportedTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                         @Override
                         protected void doInTransactionWithoutResult(TransactionStatus status) {
                             jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                                "Huang", "1111112");
+                                    "Huang", "1111112");
                             throw new CustomRuntimeException();
                         }
                     });
@@ -308,7 +312,7 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 throw new CustomRuntimeException();
             }
         });
@@ -320,12 +324,12 @@ public class SpringTxTestImpl implements SpringTxTest {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                 jdbcTemplate.update("insert into user (name, password) values (?, ?)", "Huang",
-                    "1111112");
+                        "1111112");
                 supportsTransactionTemplate.execute(new TransactionCallbackWithoutResult() {
                     @Override
                     protected void doInTransactionWithoutResult(TransactionStatus status) {
                         jdbcTemplate.update("insert into user (name, password) values (?, ?)",
-                            "Huang", "1111112");
+                                "Huang", "1111112");
                         status.setRollbackOnly();
                     }
                 });
@@ -335,7 +339,7 @@ public class SpringTxTestImpl implements SpringTxTest {
 
     @Override
     public void cleanUp() {
-        jdbcTemplate.update("delete from user where name = ?", "Huang");
+        jdbcTemplate.update("delete from user");
     }
 
     private int countUser() {
@@ -344,7 +348,6 @@ public class SpringTxTestImpl implements SpringTxTest {
 
     // ~ Setters
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

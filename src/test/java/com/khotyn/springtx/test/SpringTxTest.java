@@ -6,6 +6,8 @@ package com.khotyn.springtx.test;
  * @author khotyn 9/14/13 1:48 PM
  */
 public interface SpringTxTest {
+    public void before();
+
     public String helloWorld();
 
     public int mysqlConnectionTest();
