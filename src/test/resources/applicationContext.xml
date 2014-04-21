@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <bean id="springTxTest" class="com.khotyn.springtx.test.SpringTxTestImpl">
         <property name="dataSource" ref="dataSource"/>
         <property name="transactionTemplate" ref="transactionTemplate"/>
@@ -76,4 +77,29 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <!-- Liquibase 配置 -->
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="changeLog" value="classpath:databaseChangeLog.xml"/>
+    </bean>
+
+    <bean id="fireCalabashBoy" class="com.khotyn.springtx.test.FireCalabashBoy">
+        <property name="name" value="Fire Calabash"/>
+        <property name="manaConsume" value="100"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="waterCalabashBoy" class="com.khotyn.springtx.test.WaterCalabashBoy">
+        <property name="name" value="Water Calabash"/>
+        <property name="manaConsume" value="110"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="txCalabashBoy" class="com.khotyn.springtx.test.TxCalabashBoy">
+        <property name="fireCalabashBoy" ref="fireCalabashBoy"/>
+        <property name="waterCalabashBoy" ref="waterCalabashBoy"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
