@@ -101,5 +101,22 @@
         <property name="waterCalabashBoy" ref="waterCalabashBoy"/>
     </bean>
 
+    <!-- 基于注解的事务  -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="aopCalabashBoy" class="com.khotyn.springtx.test.AopTxCalabashBoy">
+        <property name="fireCalabashBoy" ref="fireCalabashBoy"/>
+        <property name="waterCalabashBoy" ref="waterCalabashBoy"/>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="skill"
+                      expression="execution(* com.khotyn.springtx.test.AopTxCalabashBoy.skill(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="skill"/>
+    </aop:config>
 </beans>

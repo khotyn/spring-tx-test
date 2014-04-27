@@ -17,4 +17,14 @@
             <column name="mana" type="int" defaultValue="0"/>
         </createTable>
     </changeSet>
+    <changeSet id="2" author="khotyn">
+        <createTable tableName="user">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(32)"/>
+            <column name="password" type="varchar(128)"/>
+            <column name="age" type="int"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

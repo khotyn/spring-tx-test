@@ -32,6 +32,8 @@ public class CalabashBoyTest {
     private CalabashBoy         waterCalabashBoy;
     /** 超级葫芦娃 */
     private CalabashBoy         txCalabashBoy;
+    /** 又一个超级葫芦娃 */
+    private CalabashBoy         aopCalabashBoy;
 
     @Before
     public void 初始化() {
@@ -44,6 +46,7 @@ public class CalabashBoyTest {
         fireCalabashBoy = applicationContext.getBean("fireCalabashBoy", CalabashBoy.class);
         waterCalabashBoy = applicationContext.getBean("waterCalabashBoy", CalabashBoy.class);
         txCalabashBoy = applicationContext.getBean("txCalabashBoy", CalabashBoy.class);
+        aopCalabashBoy = applicationContext.getBean("aopCalabashBoy", CalabashBoy.class);
     }
 
     @Test
@@ -92,13 +95,39 @@ public class CalabashBoyTest {
             "100");
         jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)",
             "Water Calabash", "200");
-        txCalabashBoy.skill();
+        aopCalabashBoy.skill();
         Assert.assertEquals(0, fireCalabashBoy.getMana());
         Assert.assertEquals(90, waterCalabashBoy.getMana());
     }
 
     @Test
     public void 声明式事务_回滚() {
+        jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)", "Fire Calabash",
+            "100");
+        jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)",
+            "Water Calabash", "100");
+        try {
+            aopCalabashBoy.skill();
+        } catch (Exception e) {
+            Assert.assertEquals("法力不够，求给力啊！", e.getMessage());
+        }
+        Assert.assertEquals(100, fireCalabashBoy.getMana());
+        Assert.assertEquals(100, waterCalabashBoy.getMana());
+    }
+
+    @Test
+    public void 注解驱动的声明式事务_测试() {
+        jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)", "Fire Calabash",
+            "100");
+        jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)",
+            "Water Calabash", "200");
+        txCalabashBoy.skill();
+        Assert.assertEquals(0, fireCalabashBoy.getMana());
+        Assert.assertEquals(90, waterCalabashBoy.getMana());
+    }
+
+    @Test
+    public void 注解驱动的声明式事务_回滚() {
         jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)", "Fire Calabash",
             "100");
         jdbcTemplate.update("insert into calabash_boy (name, mana) values (?, ?)",

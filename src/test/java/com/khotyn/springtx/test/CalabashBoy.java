@@ -1,16 +1,16 @@
 package com.khotyn.springtx.test;
 
 /**
- * ºùÂ«ÍŞ¶ÔÏó
+ * è‘«èŠ¦å¨ƒå¯¹è±¡
  * @author khotyn 4/21/14 7:07 PM
  */
 public interface CalabashBoy {
-    /** ºùÂ«ÍŞµÄÃû×Ö */
+    /** è‘«èŠ¦å¨ƒçš„åå­— */
     public String getName();
 
-    /** ºùÂ«ÍŞµÄ¼¼ÄÜ */
+    /** è‘«èŠ¦å¨ƒçš„æŠ€èƒ½ */
     public void skill();
 
-    /** ·¨Á¦Öµ */
+    /** æ³•åŠ›å€¼ */
     public int getMana();
 }

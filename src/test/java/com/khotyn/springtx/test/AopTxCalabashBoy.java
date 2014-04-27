@@ -3,10 +3,10 @@ package com.khotyn.springtx.test;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
- * @author khotyn 4/21/14 8:00 PM
+ * 
+ * @author khotyn 4/22/14 12:09 PM
  */
-public class TxCalabashBoy implements CalabashBoy {
+public class AopTxCalabashBoy implements CalabashBoy {
     /** 火娃 */
     private CalabashBoy fireCalabashBoy;
     /** 水娃 */
@@ -14,7 +14,7 @@ public class TxCalabashBoy implements CalabashBoy {
 
     @Override
     public String getName() {
-        return "Super Calabash";
+        return "超级葫芦娃";
     }
 
     @Override
